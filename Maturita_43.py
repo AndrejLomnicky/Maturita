@@ -1,48 +1,55 @@
-#maturitný príklad 43-Pyrotechnik
 import tkinter as tk, random
 
 win = tk.Tk()
 
 time = 60
-stop = False
 colors = ["green", "red", "gray", "blue", "orange"]
 sirka = 20
 dlzka = 300
 wires = []
+hram = True  # Premenná, ktorá stráži, či hra ešte beží
 
 canvas = tk.Canvas(win, width=600, height=600, bg="white")
 canvas.pack()
 
 random.shuffle(colors)
 for i in range(len(colors)):
-    wires.append(canvas.create_rectangle(200, 200+(i*sirka), 200+dlzka, 200+(i+1)*sirka, fill=colors[i], width=2))
+    w = canvas.create_rectangle(200, 200 + (i * sirka), 200 + dlzka, 200 + (i + 1) * sirka, fill=colors[i], width=2)
+    wires.append(w)
 
 winner = random.choice(wires)
 
+# Uložíme si ID textu do premennej 'hodiny'
 hodiny = canvas.create_text(300, 100, text=time, font=("Arial", 50, "bold"), anchor="center")
 
+
 def checker(event):
-    global stop
-    if stop:
-        return
-    objekty = canvas.find_overlapping(event.x, event.y, event.x+1, event.y+1)
+    global hram
+    if not hram: return  # Ak už je koniec, nič nerob
+
+    objekty = canvas.find_overlapping(event.x, event.y, event.x, event.y)
     if winner in objekty:
-        print("Vyhral si")
-        stop = True
-        print(objekty)
-        canvas.create_text(300, 300, text="Vyhral si!", font=("Arial", 50, "bold"), anchor="center")
+        hram = False
+        canvas.create_text(300, 450, text="Vyhral si!", fill="green", font=("Arial", 50, "bold"))
+    elif len(objekty) > 0:  # Ak klikol na iný drôt (nepovinné, ale logické pre pyrotechnika)
+        hram = False
+        canvas.create_text(300, 450, text="Prehral si!", fill="red", font=("Arial", 50, "bold"))
+
 
 def timer():
-    global time, stop
-    if stop:
-        return
-    time -= 1
+    global time, hram
+    if not hram: return  # Ak sme vyhrali, nepokračuj v odpočítavaní
+
+    time = time - 1
+    # DÔLEŽITÉ: Tu aktualizujeme text na plátne
     canvas.itemconfig(hodiny, text=time)
+
     if time > 0:
         win.after(1000, timer)
     else:
-        stop = True
-        canvas.create_text(300, 300, text="Prehral si!", font=("Arial", 50, "bold"), anchor="center")
+        hram = False
+        canvas.create_text(300, 450, text="Prehral si!", fill="red", font=("Arial", 50, "bold"))
+
 
 canvas.bind("<Button-1>", checker)
 win.after(1000, timer)
