@@ -1,18 +1,34 @@
-# príklad mena v stlpcoch
+# priklad mena v stlpcoch
 fr = open("mena_zamestnancov.txt","r")
-fw = open("vysledok.txt","w")
+fw = open("vystup.txt","w")
 zoz = fr.readlines()
-zoz_pol = zoz[:len(zoz)//2]
-zoz_pol2 = zoz_pol[(len(zoz)//2)+1:]
-max_retazec = zoz_pol[0]
+pol = len(zoz)//2
+mena = zoz[:pol]
+priezviska = zoz[pol:]
 
-for i in range(1,len(zoz_pol)):
-    if len(zoz_pol[i]) > len(max_retazec):
-        max_retazec = zoz_pol[i]
+for i in range(pol):
+    mena[i] = mena[i].strip()
+    priezviska[i] = priezviska[i].strip()
 
-for i in range(len(zoz_pol)):
-    fw.write(zoz_pol[i] + " "*(len(max_retazec)-len(zoz_pol[i])))
+max_meno = mena[0]
+for i in range(1,pol):
+    if len(mena[i]) > len(max_meno):
+        max_meno = mena[i]
+
+max_priez = priezviska[0]
+for i in range(1,pol):
+    if len(priezviska[i]) > len(max_priez):
+        max_priez = priezviska[i]
+
+print("Počet mien:", pol)
+print("Dĺžka najdlhšieho krstného mena:", len(max_meno))
+print("Dĺžka najdlhšieho priezviska:", len(max_priez))
+
+for i in range(pol):
+    fw.write(mena[i] + " "*(len(max_meno)-len(mena[i])) + " " + priezviska[i] + "\n")
+
 fr.close()
+fw.close()
 
 
 

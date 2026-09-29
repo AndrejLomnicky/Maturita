@@ -1,7 +1,24 @@
 # tajna tabulka
-#pismeno = "A" #priradi ordinalnu hodnotu
-#ord(pismeno) - 65  # A->0
-#(ord(pismeno) - 65) // 3 + 1 # ziskam skupinu do ktorej patri písmenko
-#str((ord(pismeno) - 65) // 3 + 1) # z jednotky cislo mi to spravi jednotku znak
-for n in "JOZO":
-    print(str((ord(n) - 65) // 3 + 1)*((ord(n) - 65) % 3 + 1),end = " ")
+veta = input("Zadaj vetu: ")
+
+pocty = [0] * 10
+sifra = ""
+
+for i in veta:
+    if i == " ":
+        kod = "0"
+    else:
+        policko = str((ord(i) - 65) // 3 + 1)
+        kod = policko * ((ord(i) - 65) % 3 + 1)
+    sifra += kod + " "
+    for x in kod:
+        pocty[int(x)] += 1
+
+print("Zašifrovaná veta:")
+print(sifra)
+
+najviac = max(pocty)
+print("Najčastejšie zvolené políčka:", end=" ")
+for i in range(10):
+    if pocty[i] == najviac:
+        print(i, end=" ")
